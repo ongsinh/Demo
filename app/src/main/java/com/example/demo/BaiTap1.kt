@@ -92,7 +92,7 @@ fun main(){
     println("Danh sach khoa hoc : $courses" )
 
     //map : anh xa id voi ten sinh vien
-    val studentsMap = listStudents.associateBy { it.id }
+    val studentsMap = listStudents.associateBy({it.id}, {it.name })
     println("Danh sach sinh vien $studentsMap")
 
     //tim sinh vien có học bổng
@@ -117,8 +117,8 @@ fun main(){
         println("1. Nhập sinh viên ")
         println("2. Sắp xếp sinh viên ")
         println("3. Thống kê số lượng sinh viên theo từng học lực ")
-        println("5. In danh sach sv")
-        println("4. Thoát")
+        println("4. In danh sach sv")
+        println("5. Thoát")
         println("Nhap lua chon : ")
         when(readLine()?.toIntOrNull()){
             1 -> {
@@ -155,8 +155,13 @@ fun main(){
                     println("$hocLuc : ${sinhVien.size}")
                 }
             }
-
-            4 -> return
+            4-> {
+                println("Danh sach sv")
+                listStudents.forEach{
+                    println(it)
+                }
+            }
+            5 -> return
             else -> println("Vui lòng nhạp lại")
         }
     }
