@@ -1,4 +1,4 @@
-package com.example.demo
+package com.example.demo.task1
 
 data class Student(
     var name: String,
