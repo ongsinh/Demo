@@ -1,48 +1,79 @@
 package com.example.demo.task2
 
-class LibararyManager {
-    val listBook = mutableListOf(
-        Book("Dế Mèn Phiêu Lưu Ký", "Tô Hoài", 1941, "Văn học thiếu nhi"),
-        Book("Sherlock Holmes", "Arthur Conan Doyle", 1892, "Trinh thám"),
-        Book("Nhà Giả Kim", "Paulo Coelho", 1988, "Triết học"),
-        Book("Tắt Đèn", "Ngô Tất Tố", 1939, "Hiện thực phê phán"),
-        Book("Harry Potter và Hòn Đá Phù Thủy", "J.K. Rowling", 1997, "Fantasy"),
-        Book("Chí Phèo", "Nam Cao", 1941, "Hiện thực phê phán"),
-        Book("Bố Già", "Mario Puzo", 1969, "Tiểu thuyết"),
-        Book("Đắc Nhân Tâm", "Dale Carnegie", 1936, "Kỹ năng sống"),
-        Book("Tội Ác và Hình Phạt", "Fyodor Dostoevsky", 1866, "Văn học Nga"),
-        Book("Thép Đã Tôi Thế Đấy", "Nikolai Ostrovsky", 1932, "Cách mạng")
+@Suppress("NAME_SHADOWING")
+class LibararyManager : IAction {
+
+    private val listBook = mutableListOf(
+        Book(1, "Dế Mèn Phiêu Lưu Ký", "Tô Hoài", 1941, "Văn học thiếu nhi"),
+        Book(2, "Sherlock Holmes", "Arthur Conan Doyle", 1892, "Trinh thám"),
+        Book(3, "Nhà Giả Kim", "Paulo Coelho", 1988, "Triết học"),
+        Book(4, "Tắt Đèn", "Ngô Tất Tố", 1939, "Hiện thực phê phán"),
+        Book(5, "Harry Potter và Hòn Đá Phù Thủy", "J.K. Rowling", 1997, "Fantasy"),
+        Book(6, "Chí Phèo", "Nam Cao", 1941, "Hiện thực phê phán"),
+        Book(7, "Bố Già", "Mario Puzo", 1969, "Tiểu thuyết"),
+        Book(8, "Đắc Nhân Tâm", "Dale Carnegie", 1936, "Kỹ năng sống"),
+        Book(9, "Tội Ác và Hình Phạt", "Fyodor Dostoevsky", 1866, "Văn học Nga"),
+        Book(10, "Thép Đã Tôi Thế Đấy", "Nikolai Ostrovsky", 1932, "Cách mạng")
     )
 
-    val listUser = mutableListOf(
+    private val listUser = mutableListOf(
         User(1, "Nguyễn Văn A"), User(2, "Trần Thị B"), User(3, "Lê Văn C")
     )
 
 
-    fun addBook() {
-        println("Nhap ten sach : ")
+    override fun addBook() {
+        println("Nhập tên sách: ")
         val tenSach = readlnOrNull() ?: return
-        println("Nhap tac gia :")
+        println("Nhập tác giả: ")
         val tacGia = readlnOrNull() ?: return
-        println("Nhap nam xuat ban :")
+        println("Nhập năm xuất bản: ")
         val namXuatBan = readlnOrNull()?.toIntOrNull() ?: return
-        println("Nhap the loai (0 : Sách giấy - 1 : Sách điện tử) : ")
-        val theloai = when (readlnOrNull()?.toIntOrNull()) {
-            0 -> "Sach giay"
-            1 -> "Sach dien tu"
-            else -> {
-                println("Lua chon khong hop le ")
-                return
+
+        var theLoai: String
+        do {
+            println("Nhập thể loại (0: Sách giấy - 1: Sách điện tử): ")
+            theLoai = when (readlnOrNull()?.toIntOrNull()) {
+                0 -> "Sách giấy"
+                1 -> "Sách điện tử"
+                else -> {
+                    println("Lựa chọn không hợp lệ, vui lòng nhập lại!")
+                    ""
+                }
             }
-        }
-        val book = Book(tenSach, tacGia, namXuatBan, theloai)
+        } while (theLoai.isEmpty())
+
+        val book = Book(Book.generateId(listBook), tenSach, tacGia, namXuatBan, theLoai)
         listBook.add(book)
-        println("Them sach thanh cong")
+        println("Thêm sách thành công!")
     }
 
-    fun showListBook() {
+
+    override fun addUser() {
+        println("Nhập tên người mượn sách :")
+        val name = readlnOrNull() ?: return
+        val user = User(User.generateId(listUser), name)
+        listUser.add(user)
+        println("Thêm người mượn sách thành công")
+    }
+
+    override fun findBookByTitle() {
+        println("Nhập tên sách cần tiìm : ")
+        val tenSach = readlnOrNull()?.uppercase() ?: return
+        val timkiem = listBook.filter { it.tenSach.uppercase().contains(tenSach) }
+
+        if (timkiem.isEmpty()) {
+            println("Không tìm thấy sách ")
+        } else {
+            println("Kết quả tìm kiếm :")
+            timkiem.forEach {
+                println(it)
+            }
+        }
+    }
+
+    override fun displayBook() {
         if (listBook.isEmpty()) {
-            println("Danh sach trong")
+            println("Danh sách trống")
         } else {
             listBook.forEach {
                 println(it)
@@ -50,30 +81,28 @@ class LibararyManager {
         }
     }
 
-    fun timkiemSach() {
-        println("Nhap ten sach can tim : ")
-        val tenSach = readlnOrNull()?.uppercase() ?: return
-        val timkiem = listBook.filter { it.tenSach.uppercase().contains(tenSach) }
-
-        if (timkiem.isEmpty()) {
-            println("Khong tim thay sach")
+    override fun displayUser() {
+        if (listUser.isEmpty()) {
+            println("Danh sách trống")
         } else {
-            println("Ket qua tim kiem :")
-            timkiem.forEach {
-                println(it)
+            listUser.forEach {
+                println("Id : ${it.id} , Name : ${it.name}")
             }
         }
     }
 
-    fun muonSach() {
+    override fun borrowBook() {
         println("Nhập thông tin khách mượn sách")
         print("Nhập mã người dùng: ")
         val maKH = readlnOrNull()?.toIntOrNull() ?: return
-        print("Nhập tên người dùng: ")
-        val tenKH = readlnOrNull() ?: return
+        val user = listUser.find { it.id == maKH }
+        if (user == null) {
+            print("Nhập tên người dùng: ")
+            val tenKH = readlnOrNull() ?: return
 
-        val user = User(maKH, tenKH)
-        listUser.add(user)
+            val user = User(maKH, tenKH)
+            listUser.add(user)
+        }
 
         val sachChuaMuon = getSachChuaMuon()
 
@@ -85,23 +114,21 @@ class LibararyManager {
         println("Danh sách sách chưa mượn:")
         sachChuaMuon.forEach { println(it) }
 
-        print("Nhập tên sách cần mượn: ")
-        val tenSachMuon = readlnOrNull()?.trim()?.uppercase() ?: return
-        val sachMuon = sachChuaMuon.find { it.tenSach.uppercase().contains(tenSachMuon) }
+        print("Nhập id sách cần mượn: ")
+        val idSachMuon = readlnOrNull()?.toIntOrNull() ?: return
+        val sachMuon = sachChuaMuon.find { it.id == idSachMuon }
 
         if (sachMuon != null) {
-            user.sachDaMuon.add(sachMuon)
-            println("${user.name} đã mượn sách: ${sachMuon.tenSach}")
+            user?.sachDaMuon?.add(sachMuon)
+            println("${user?.name} đã mượn sách: ${sachMuon.tenSach}")
         } else {
             println(" Không tìm thấy sách phù hợp!")
         }
     }
 
-
-    fun listMuonSach() {
-        println("Danh sách sách mà người dùng đã mượn:")
+    override fun displayBookBorrowed() {
         listUser.forEach { user ->
-            println("Danh sach sach đã mượn cua nguoi dung ${user.name}")
+            println("Danh sách sách đã mượn của người dùng ${user.name}")
             if (user.sachDaMuon.isEmpty()) {
                 println("Chưa mượn sách nào.")
             } else {
@@ -110,7 +137,8 @@ class LibararyManager {
         }
     }
 
-    fun getSachChuaMuon(): List<Book> {
+
+    private fun getSachChuaMuon(): List<Book> {
         return listBook.filter { sach ->
             listUser.none() { user -> user.sachDaMuon.contains(sach) }
         }
