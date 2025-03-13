@@ -10,4 +10,5 @@ data class User(
             return (users.maxOfOrNull { it.id } ?: 0) + 1
         }
     }
+
 }

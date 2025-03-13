@@ -5,11 +5,13 @@ data class Book(
     var tenSach: String,
     var tacGia: String,
     var namXuatBan: Int,
-    var theLoai: String
+    var theLoai: String,
+    var nhaXuatBan: String
 ) {
     companion object {
         fun generateId(books: List<Book>): Int {
             return (books.maxOfOrNull { it.id } ?: 0) + 1
         }
     }
+
 }
