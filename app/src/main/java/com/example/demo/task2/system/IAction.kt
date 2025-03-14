@@ -1,4 +1,4 @@
-package com.example.demo.task2
+package com.example.demo.task2.system
 
 interface IAction {
     fun addBook()

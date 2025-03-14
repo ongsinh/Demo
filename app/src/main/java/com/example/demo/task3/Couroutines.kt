@@ -1,6 +1,6 @@
 //package com.example.demo.task3
 //
-//import kotlinx.coroutines.CoroutineScope
+//
 //import kotlinx.coroutines.Dispatchers
 //import kotlinx.coroutines.GlobalScope
 //import kotlinx.coroutines.NonCancellable
@@ -13,7 +13,6 @@
 //import kotlinx.coroutines.supervisorScope
 //import kotlinx.coroutines.withContext
 //import kotlinx.coroutines.withTimeout
-//import kotlin.random.Random
 //import kotlin.system.measureTimeMillis
 //
 //fun main() = runBlocking {

@@ -1,4 +1,4 @@
-package com.example.demo.task2
+package com.example.demo.task2.system
 
 import com.example.demo.task2.model.Book
 import com.example.demo.task2.model.User
@@ -7,16 +7,16 @@ class LibraryManager : IAction {
 
     override fun addBook() {
         println("Nhập tên sách: ")
-        val tenSach = readlnOrNull() ?: return
+        val bookTitle = readlnOrNull() ?: return
         println("Nhập tác giả: ")
-        val tacGia = readlnOrNull() ?: return
+        val author = readlnOrNull() ?: return
         println("Nhập năm xuất bản: ")
-        val namXuatBan = readlnOrNull()?.toIntOrNull() ?: return
+        val publicationYear = readlnOrNull()?.toIntOrNull() ?: return
 
-        var theLoai: String
+        var genre: String
         do {
             println("Nhập thể loại (0: Sách giấy - 1: Sách điện tử): ")
-            theLoai = when (readlnOrNull()?.toIntOrNull()) {
+            genre = when (readlnOrNull()?.toIntOrNull()) {
                 0 -> "Sách giấy"
                 1 -> "Sách điện tử"
                 else -> {
@@ -24,15 +24,15 @@ class LibraryManager : IAction {
                     ""
                 }
             }
-        } while (theLoai.isEmpty())
+        } while (genre.isEmpty())
         println("Nhập id nhà xuất bản")
         val idNXB = readlnOrNull()?.toIntOrNull() ?: return
         val book = Book(
             Book.generateId(LibraryData.listBook),
-            tenSach,
-            tacGia,
-            namXuatBan,
-            theLoai,
+            bookTitle,
+            author,
+            publicationYear,
+            genre,
             LibraryData.listPublisher[idNXB].name
         )
         LibraryData.listBook.add(book)
@@ -83,14 +83,14 @@ class LibraryManager : IAction {
 
     override fun findBookByTitle() {
         println("Nhập tên sách cần tiìm : ")
-        val tenSach = readlnOrNull()?.uppercase() ?: return
-        val timkiem = LibraryData.listBook.filter { it.bookTitle.uppercase().contains(tenSach) }
+        val nameBook = readlnOrNull()?.uppercase() ?: return
+        val search = LibraryData.listBook.filter { it.bookTitle.uppercase().contains(nameBook) }
 
-        if (timkiem.isEmpty()) {
+        if (search.isEmpty()) {
             println("Không tìm thấy sách ")
         } else {
             println("Kết quả tìm kiếm :")
-            timkiem.forEach {
+            search.forEach {
                 println(it)
             }
         }
@@ -121,8 +121,8 @@ class LibraryManager : IAction {
     override fun borrowBook() {
         println("Nhập thông tin khách mượn sách")
         print("Nhập mã người dùng: ")
-        val maKH = readlnOrNull()?.toIntOrNull() ?: return
-        var user = LibraryData.listUser.find { it.id == maKH }
+        val idUser = readlnOrNull()?.toIntOrNull() ?: return
+        var user = LibraryData.listUser.find { it.id == idUser }
         if (user == null) {
             println("Mã người dùng không tồn tại")
             print("Nhập tên người dùng: ")
@@ -132,7 +132,7 @@ class LibraryManager : IAction {
             LibraryData.listUser.add(user)
         }
 
-        val availableBook = getAvailableBooks(user)
+        val availableBook = LibraryData.listUser.getAvailableBooks(LibraryData.listBook)
 
         if (availableBook.isEmpty()) {
             println(" Không có sách nào có sẵn để mượn!")
@@ -166,18 +166,17 @@ class LibraryManager : IAction {
     }
 
 
-    private fun getAvailableBooks(user: User?): List<Book> {
-        if (user != null) {
-            return LibraryData.listBook.filter { sach ->
-                LibraryData.listUser.none { user ->
-                    user.borrowedBooks.contains(sach)
-                }
+    //extension function
+    fun List<User>.getAvailableBooks(listBook: List<Book>): List<Book> {
+        return listBook.filter { book ->
+            this.none { user ->
+                user.borrowedBooks.contains(book)
             }
         }
-        return LibraryData.listBook
     }
-
-//    fun List<Book>.findBookByCategory(category: String): List<Book>{
-//        return this.filter { it.theLoai.contains(category,ignoreCase = true) }
-//    }
 }
+
+/*
+*
+*
+* */
