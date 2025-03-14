@@ -4,7 +4,6 @@ package com.example.demo.task2
 fun main(){
 
     val libraryManager = LibraryManager()
-
     while (true){
         println("Chọn chức năng : ")
         println("1. Thêm thông tin sách ")
@@ -25,7 +24,7 @@ fun main(){
             4 -> libraryManager.displayPublisher()
             5 -> libraryManager.addUser()
             6  -> libraryManager.displayUser()
-            7 -> libraryManager.deleteBook()
+            7 -> libraryManager.deleteUser()
             8 -> libraryManager.findBookByTitle()
             9 -> libraryManager.borrowBook()
             10 -> libraryManager.displayBookBorrowed()

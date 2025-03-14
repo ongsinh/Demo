@@ -2,11 +2,11 @@ package com.example.demo.task2.model
 
 data class Book(
     var id: Int,
-    var tenSach: String,
-    var tacGia: String,
-    var namXuatBan: Int,
-    var theLoai: String,
-    var nhaXuatBan: String
+    var bookTitle: String,
+    var author: String,
+    var publicationYear: Int,
+    var genre: String,
+    var publisher: String
 ) {
     companion object {
         fun generateId(books: List<Book>): Int {

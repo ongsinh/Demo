@@ -28,7 +28,12 @@ class LibraryManager : IAction {
         println("Nhập id nhà xuất bản")
         val idNXB = readlnOrNull()?.toIntOrNull() ?: return
         val book = Book(
-            Book.generateId(LibraryData.listBook), tenSach, tacGia, namXuatBan, theLoai, LibraryData.listPublisher[idNXB].name
+            Book.generateId(LibraryData.listBook),
+            tenSach,
+            tacGia,
+            namXuatBan,
+            theLoai,
+            LibraryData.listPublisher[idNXB].name
         )
         LibraryData.listBook.add(book)
         println("Thêm sách thành công!")
@@ -66,12 +71,12 @@ class LibraryManager : IAction {
 
     override fun deleteUser() {
         println("Nhap id người dùng cần xóa :")
-        val id = readlnOrNull()?.toIntOrNull()?: return
+        val id = readlnOrNull()?.toIntOrNull() ?: return
         val user = LibraryData.listUser.find { it.id == id }
-        if( user != null){
+        if (user != null) {
             LibraryData.listUser.remove(user)
             println("Xóa thông tin người dùng thành công")
-        }else{
+        } else {
             println("Không tìm thấy người dùng cần xóa")
         }
     }
@@ -79,7 +84,7 @@ class LibraryManager : IAction {
     override fun findBookByTitle() {
         println("Nhập tên sách cần tiìm : ")
         val tenSach = readlnOrNull()?.uppercase() ?: return
-        val timkiem = LibraryData.listBook.filter { it.tenSach.uppercase().contains(tenSach) }
+        val timkiem = LibraryData.listBook.filter { it.bookTitle.uppercase().contains(tenSach) }
 
         if (timkiem.isEmpty()) {
             println("Không tìm thấy sách ")
@@ -127,23 +132,23 @@ class LibraryManager : IAction {
             LibraryData.listUser.add(user)
         }
 
-        val sachChuaMuon = getSachChuaMuon(user)
+        val availableBook = getAvailableBooks(user)
 
-        if (sachChuaMuon.isEmpty()) {
+        if (availableBook.isEmpty()) {
             println(" Không có sách nào có sẵn để mượn!")
             return
         }
 
         println("Danh sách sách chưa mượn:")
-        sachChuaMuon.forEach { println(it) }
+        availableBook.forEach { println(it) }
 
         print("Nhập id sách cần mượn: ")
-        val idSachMuon = readlnOrNull()?.toIntOrNull() ?: return
-        val sachMuon = sachChuaMuon.find { it.id == idSachMuon }
+        val idBook = readlnOrNull()?.toIntOrNull() ?: return
+        val borrowBook = availableBook.find { it.id == idBook }
 
-        if (sachMuon != null) {
-            user.sachDaMuon.add(sachMuon)
-            println("${user.name} đã mượn sách: ${sachMuon.tenSach}")
+        if (borrowBook != null) {
+            user.borrowedBooks.add(borrowBook)
+            println("${user.name} đã mượn sách: ${borrowBook.bookTitle}")
         } else {
             println(" Không tìm thấy sách phù hợp!")
         }
@@ -152,23 +157,27 @@ class LibraryManager : IAction {
     override fun displayBookBorrowed() {
         LibraryData.listUser.forEach { user ->
             println("Danh sách sách đã mượn của người dùng ${user.name}")
-            if (user.sachDaMuon.isEmpty()) {
+            if (user.borrowedBooks.isEmpty()) {
                 println("Chưa mượn sách nào.")
             } else {
-                user.sachDaMuon.forEach { println(it) }
+                user.borrowedBooks.forEach { println(it) }
             }
         }
     }
 
 
-    private fun getSachChuaMuon(user: User?): List<Book> {
+    private fun getAvailableBooks(user: User?): List<Book> {
         if (user != null) {
             return LibraryData.listBook.filter { sach ->
                 LibraryData.listUser.none { user ->
-                    user.sachDaMuon.contains(sach)
+                    user.borrowedBooks.contains(sach)
                 }
             }
         }
         return LibraryData.listBook
     }
+
+//    fun List<Book>.findBookByCategory(category: String): List<Book>{
+//        return this.filter { it.theLoai.contains(category,ignoreCase = true) }
+//    }
 }
