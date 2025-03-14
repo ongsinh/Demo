@@ -7,7 +7,8 @@ interface IAction {
     fun findBookByTitle()
     fun displayBook()
     fun displayUser()
-    fun displayNhaXuatBan()
+    fun deleteUser()
+    fun displayPublisher()
     fun borrowBook()
     fun displayBookBorrowed()
 }

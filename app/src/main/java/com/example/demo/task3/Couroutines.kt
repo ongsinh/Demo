@@ -2,15 +2,19 @@ package com.example.demo.task3
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.async
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlin.random.Random
+import kotlin.system.measureTimeMillis
 
 fun main() = runBlocking {
     /*launch { doWorld() }
@@ -52,6 +56,40 @@ fun main() = runBlocking {
     println("Main I am tired of waiting")
     job2.cancelAndJoin()
     println("Main coroutine ")
+    val result = measureTimeMillis {
+        val one = doSomething1()
+        val two = doSomething2() //chờ 1 làm xong đến 2
+        println(one + two)
+    }
+    val result1 = measureTimeMillis {
+        val one = async{doSomething1()}
+        val two = async{doSomething2()}
+        println(one.await() + two.await())
+    }
+    println(result)
+    println(result1)
+
+    //supervisorScope
+    supervisorScope {
+        launch {
+            delay(1000)
+            throw Exception("error")
+        }
+
+        launch {
+            delay(1000)
+            throw Exception("error")
+        }
+    }
+
+    //global scope
+    GlobalScope.launch {
+        delay(1000)
+        println("Scope")
+    }
+
+
+
 }
 
 //suspend fun doWorld() {
@@ -73,4 +111,13 @@ suspend fun doWorld() = coroutineScope {
     println("Hello")
 }
 
+suspend fun doSomething1() : Int{
+    delay(1000)
+    return 15
+}
+
+suspend fun doSomething2() : Int{
+    delay(1000)
+    return 25
+}
 

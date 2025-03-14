@@ -1,10 +1,9 @@
 package com.example.demo.task2
 
-import android.telecom.Call.Details
 
 fun main(){
 
-    val libararyManager = LibararyManager()
+    val libraryManager = LibraryManager()
 
     while (true){
         println("Chọn chức năng : ")
@@ -19,15 +18,15 @@ fun main(){
         println("9. Danh sách sách người dùng đã mượn")
         println("10. Thoát")
         when(readlnOrNull()?.toIntOrNull()){
-            1 -> libararyManager.addBook()
-            2 -> libararyManager.displayBook()
-            3 -> libararyManager.deleteBook()
-            4 -> libararyManager.displayNhaXuatBan()
-            5 -> libararyManager.addUser()
-            6  -> libararyManager.displayUser()
-            7 -> libararyManager.findBookByTitle()
-            8 -> libararyManager.borrowBook()
-            9 -> libararyManager.displayBookBorrowed()
+            1 -> libraryManager.addBook()
+            2 -> libraryManager.displayBook()
+            3 -> libraryManager.deleteBook()
+            4 -> libraryManager.displayPublisher()
+            5 -> libraryManager.addUser()
+            6  -> libraryManager.displayUser()
+            7 -> libraryManager.findBookByTitle()
+            8 -> libraryManager.borrowBook()
+            9 -> libraryManager.displayBookBorrowed()
             10 -> return
             else -> println("Vui long nhap lai")
         }
