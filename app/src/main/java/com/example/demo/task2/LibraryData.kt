@@ -1,12 +1,16 @@
 package com.example.demo.task2
 
+import com.example.demo.task2.model.Book
+import com.example.demo.task2.model.Publisher
+import com.example.demo.task2.model.User
+
 object LibraryData {
     //tạo object truy cập bất kì đâu
     val listPublisher = mutableListOf(
-        NhaXuatBan(1,"NXB Giáo dục", "Hà Nội", "0123456789"),
-        NhaXuatBan(2,"NXB Văn hóa Văn nghệ", "Hồ Chí Minh", "0987654321"),
-        NhaXuatBan(3,"NXB Thế giới", "Đà Nẵng", "0123456780"),
-        NhaXuatBan(4,"NXB Phụ nữ", "Hải Phòng", "0987654320"),
+        Publisher(1,"NXB Giáo dục", "Hà Nội", "0123456789"),
+        Publisher(2,"NXB Văn hóa Văn nghệ", "Hồ Chí Minh", "0987654321"),
+        Publisher(3,"NXB Thế giới", "Đà Nẵng", "0123456780"),
+        Publisher(4,"NXB Phụ nữ", "Hải Phòng", "0987654320"),
     )
 
     val listBook = mutableListOf(

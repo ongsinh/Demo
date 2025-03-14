@@ -1,6 +1,6 @@
-package com.example.demo.task2
+package com.example.demo.task2.model
 
-data class NhaXuatBan (
+data class Publisher (
     val id : Int,
     val name : String,
     val address : String,

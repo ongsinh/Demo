@@ -1,5 +1,8 @@
 package com.example.demo.task2
 
+import com.example.demo.task2.model.Book
+import com.example.demo.task2.model.User
+
 class LibraryManager : IAction {
 
     override fun addBook() {
@@ -25,12 +28,7 @@ class LibraryManager : IAction {
         println("Nhập id nhà xuất bản")
         val idNXB = readlnOrNull()?.toIntOrNull() ?: return
         val book = Book(
-            Book.generateId(LibraryData.listBook),
-            tenSach,
-            tacGia,
-            namXuatBan,
-            theLoai,
-            LibraryData.listPublisher[idNXB].name
+            Book.generateId(LibraryData.listBook), tenSach, tacGia, namXuatBan, theLoai, LibraryData.listPublisher[idNXB].name
         )
         LibraryData.listBook.add(book)
         println("Thêm sách thành công!")

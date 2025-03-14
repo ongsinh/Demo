@@ -1,4 +1,4 @@
-package com.example.demo.task2
+package com.example.demo.task2.model
 
 data class User(
     val id: Int,
