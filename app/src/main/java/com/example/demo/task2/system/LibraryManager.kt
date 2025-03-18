@@ -42,12 +42,10 @@ class LibraryManager : IAction {
     override fun deleteBook() {
         println("Nhập id sách cần xóa :")
         val id = readlnOrNull()?.toIntOrNull() ?: return
-        val book = LibraryData.listBook.find { it.id == id }
-        if (book != null) {
-            LibraryData.listBook.remove(book)
-            println("Xóa sách thành công ")
+        if (LibraryData.listBook.removeIf { it.id == id }) {
+            println("Xóa sách thành công")
         } else {
-            println("Không tìm thấy sách cần xóa")
+            println("Xóa sách không thành công")
         }
     }
 
@@ -72,12 +70,11 @@ class LibraryManager : IAction {
     override fun deleteUser() {
         println("Nhap id người dùng cần xóa :")
         val id = readlnOrNull()?.toIntOrNull() ?: return
-        val user = LibraryData.listUser.find { it.id == id }
-        if (user != null) {
-            LibraryData.listUser.remove(user)
-            println("Xóa thông tin người dùng thành công")
+
+        if (LibraryData.listUser.removeIf { it.id == id }) {
+            println("Xóa người dùng thành công")
         } else {
-            println("Không tìm thấy người dùng cần xóa")
+            println("Xóa người dùng không thành công")
         }
     }
 

@@ -2,7 +2,8 @@ package com.example.demo.task2.system
 
 
 fun main(){
-
+    val text = "Xin chào"
+    println(text.toByteArray(Charsets.UTF_8).toString(Charsets.UTF_8))
     val libraryManager = LibraryManager()
     while (true){
         println("Chọn chức năng : ")
