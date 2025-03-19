@@ -11,4 +11,5 @@ interface IAction {
     fun displayPublisher()
     fun borrowBook()
     fun displayBookBorrowed()
+    fun returnBook()
 }

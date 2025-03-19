@@ -27,7 +27,7 @@ object LibraryData {
     )
 
     val listUser = mutableListOf(
-        User(1, "Nguyễn Văn A", mutableListOf(listBook[0], listBook[1])),
+        User(1, "Nguyễn Văn A", mutableListOf(listBook[0], listBook[1], listBook[3])),
         User(2, "Trần Thị B"),
         User(3, "Lê Văn C")
     )

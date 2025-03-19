@@ -5,4 +5,8 @@ data class Publisher (
     val name : String,
     val address : String,
     val contact : String
-)
+){
+    override fun toString(): String {
+        return "Publisher(id=$id, name='$name', address='$address', contact='$contact')"
+    }
+}

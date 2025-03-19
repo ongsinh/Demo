@@ -14,4 +14,8 @@ data class Book(
         }
     }
 
+    override fun toString(): String {
+        return "Book(id=$id, bookTitle='$bookTitle', author='$author', publicationYear=$publicationYear, genre='$genre', publisher='$publisher')"
+    }
+
 }

@@ -15,7 +15,8 @@ fun main(){
         println("8. Tìm kiếm sách theo tên")
         println("9. Mượn sách")
         println("10. Danh sách sách người dùng đã mượn")
-        println("11. Thoát")
+        println("11. Trả sách mượn")
+        println("12. Thoát")
         when(readlnOrNull()?.toIntOrNull()){
             1 -> libraryManager.addBook()
             2 -> libraryManager.displayBook()
@@ -27,7 +28,8 @@ fun main(){
             8 -> libraryManager.findBookByTitle()
             9 -> libraryManager.borrowBook()
             10 -> libraryManager.displayBookBorrowed()
-            11 -> return
+            11 -> libraryManager.returnBook()
+            12 -> return
             else -> println("Vui long nhap lai")
         }
     }

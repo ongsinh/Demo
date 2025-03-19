@@ -42,11 +42,19 @@ class LibraryManager : IAction {
     override fun deleteBook() {
         println("Nhập id sách cần xóa :")
         val id = readlnOrNull()?.toIntOrNull() ?: return
-        if (LibraryData.listBook.removeIf { it.id == id }) {
-            println("Xóa sách thành công")
-        } else {
-            println("Xóa sách không thành công")
+        val isBookBrrowed = LibraryData.listUser.any { user ->
+            user.borrowedBooks.any { it.id == id }
         }
+        if (isBookBrrowed) {
+            println("Sách đang được mượn không the xoa")
+        } else {
+            if (LibraryData.listBook.removeIf { it.id == id }) {
+                println("Xóa sách thành công")
+            } else {
+                println("Xóa sách không thành công")
+            }
+        }
+
     }
 
     override fun displayPublisher() {
@@ -148,6 +156,20 @@ class LibraryManager : IAction {
             println("${user.name} đã mượn sách: ${borrowBook.bookTitle}")
         } else {
             println(" Không tìm thấy sách phù hợp!")
+        }
+    }
+
+    override fun returnBook() {
+        println("Nhập ID người dùng : ")
+        val idUser = readlnOrNull()?.toIntOrNull() ?: return
+        val user = LibraryData.listUser.find { it.id == idUser } ?: return println("ID người dùng không đúng")
+
+        println("Nhập id sách cần trả :")
+        val idBook = readlnOrNull()?.toIntOrNull() ?: return
+        if (user.borrowedBooks.removeIf { it.id == idBook }) {
+            println("Trả sách thành công")
+        } else {
+            println("Trả sách không thành công")
         }
     }
 
