@@ -28,7 +28,7 @@ class BorrowedManager : Borrowable {
             println("Add people successfully borrowed books")
         }
 
-        val availableBook = LibraryData.listBook.filter { it.bookStatus == false }
+        val availableBook = LibraryData.listBook.filter { !it.bookStatus }
 
         if (availableBook.isEmpty()) {
             println(" Không có sách nào có sẵn để mượn!")
@@ -76,8 +76,8 @@ class BorrowedManager : Borrowable {
         }
     }
 
-    fun isValidphoneNumber(phoneNumer: String): Boolean {
-        return phoneNumer.matches(Regex("^\\d{10}$"))
+    private fun isValidphoneNumber(phoneNumber: String): Boolean {
+        return phoneNumber.matches(Regex("^\\d{10}$"))
     }
 
 
