@@ -1,6 +1,7 @@
-package com.example.demo.task2.model
+import com.example.demo.task2.model.BookBase
 
-data class Book(
+
+data class EBook(
     override val id: Int,
     override var bookTitle: String,
     override var author: String,
@@ -8,12 +9,11 @@ data class Book(
     override var genre: String,
     override var publisher: String,
     override var bookStatus: Boolean,
-    var pageNumber: Int
+    var format: String,
 ) : BookBase(id, bookTitle, author, publicationYear, genre, publisher, bookStatus) {
 
     override fun displayInfo(): String {
-        return "Book(id=$id, bookTitle='$bookTitle', author='$author', publicationYear=$publicationYear, genre='$genre', publisher='$publisher', bookStatus=$bookStatus, pageNumber='$pageNumber')"
+        return "EBook(id=$id, bookTitle='$bookTitle', author='$author', publicationYear=$publicationYear, genre='$genre', publisher='$publisher', bookStatus=$bookStatus, format='$format')"
     }
-
 
 }
