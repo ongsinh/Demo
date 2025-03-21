@@ -1,12 +1,7 @@
 package com.example.demo.task2.system
 
-import task2.system.BookManager
-import task2.system.UserManager
-
 
 fun main() {
-    val userManager = UserManager()
-    val borrowedManager = BorrowedManager()
     while (true) {
         println("Select program")
         println("1. User management ")
@@ -40,12 +35,14 @@ fun manageBorrowedBook() {
         println("1. Borrow book ")
         println("2. Return book")
         println("3. Display book borrowed")
-        println("4. Exit")
+        println("4. Get list book by userID")
+        println("5. Exit")
         when (readlnOrNull()?.toIntOrNull()) {
             1 -> borrowedManager.borrowBook()
             2 -> borrowedManager.returnBook()
             3 -> borrowedManager.displayBookBorrowed()
-            4 -> return
+            4 -> borrowedManager.getBookBorrowedUser()
+            5 -> return
             else -> println("Please re-enter")
         }
     }
@@ -66,7 +63,11 @@ fun manageBook() {
         println("9. Exit")
         when (readlnOrNull()?.toIntOrNull()) {
             1 -> bookManager.addBook()
-            2 -> bookManager.deleteBook()
+            2 -> {
+                println("Enter the book id to delete :")
+                val id = readlnOrNull()?.toIntOrNull() ?: return
+                bookManager.deleteBook(id)
+            }
             3 -> bookManager.displayBook()
             4 -> bookManager.displayAllEbook()
             5 -> bookManager.displayAllBook()

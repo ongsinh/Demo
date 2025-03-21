@@ -11,6 +11,12 @@ data class Book(
     var pageNumber: Int
 ) : BookBase(id, bookTitle, author, publicationYear, genre, publisher, bookStatus) {
 
+    companion object {
+        fun generateId(books: List<BookBase>): Int {
+            return (books.maxOfOrNull { it.id } ?: 0) + 1
+        }
+    }
+
     override fun displayInfo(): String {
         return "Book(id=$id, bookTitle='$bookTitle', author='$author', publicationYear=$publicationYear, genre='$genre', publisher='$publisher', bookStatus=$bookStatus, pageNumber='$pageNumber')"
     }

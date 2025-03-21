@@ -1,7 +1,8 @@
-
+package com.example.demo.task2.data
 import com.example.demo.task2.model.Book
 import com.example.demo.task2.model.BookBase
 import com.example.demo.task2.model.User
+import com.example.demo.task2.model.EBook
 
 object LibraryData {
 

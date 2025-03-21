@@ -1,8 +1,11 @@
-package task2.system
+package com.example.demo.task2.system
 
-import BookRepository
-import EBook
+
 import com.example.demo.task2.model.Book
+import com.example.demo.task2.data.LibraryData
+import com.example.demo.task2.`interface`.BookRepository
+import com.example.demo.task2.model.BookBase
+import com.example.demo.task2.model.EBook
 
 class BookManager : BookRepository {
     override fun addBook() {
@@ -24,36 +27,95 @@ class BookManager : BookRepository {
         println("Is this Ebook? (yes/no)")
         val isEbook = readlnOrNull()?.lowercase() == "yes"
 
-        val id = generateBookId()
 
         val book = if (isEbook) {
             println("Enter format:")
             val format = readlnOrNull()?.takeIf { it.isNotBlank() } ?: return
-            EBook(id, bookTitle, author, publicationYear, genre, publisher, false, format)
+            EBook(
+                EBook.generateId(LibraryData.listBook),
+                bookTitle,
+                author,
+                publicationYear,
+                genre,
+                publisher,
+                false,
+                format
+            )
         } else {
             println("Enter page number:")
             val pageNumber = readlnOrNull()?.toIntOrNull() ?: return
-            Book(id, bookTitle, author, publicationYear, genre, publisher, false, pageNumber)
+            Book(
+                Book.generateId(LibraryData.listBook),
+                bookTitle,
+                author,
+                publicationYear,
+                genre,
+                publisher,
+                false,
+                pageNumber
+            )
         }
 
         LibraryData.listBook.add(book)
         println("Add book successful!")
     }
 
-    override fun deleteBook() {
-        println("Enter the book id to delete :")
+    override fun updateBook() {
+        println("Enter book id to update")
         val id = readlnOrNull()?.toIntOrNull() ?: return
-        val isBookBorrowed = LibraryData.listUser.any { user ->
-            user.borrowedBooks.any { it.bookStatus == true }
-        }
-        if (isBookBorrowed) {
-            println("Books that are being borrowed cannot be deleted.")
-        } else {
-            if (LibraryData.listBook.removeIf { it.id == id }) {
-                println("Delete book successful")
-            } else {
-                println("Delete book fail")
+        val book = findBookById(id)
+        book?.apply {
+            println("Enter book title: ")
+            bookTitle = readlnOrNull()?.takeIf { it.isNotBlank() } ?: bookTitle
+            println("Enter author: ")
+            author = readlnOrNull()?.takeIf { it.isNotBlank() } ?: author
+            println("Enter publication year:")
+            publicationYear = readlnOrNull()?.toIntOrNull() ?: publicationYear
+            println("Enter genre :")
+            genre = readlnOrNull()?.takeIf { it.isNotBlank() } ?: genre
+            println("Enter publisher ")
+            publisher = readlnOrNull()?.takeIf { it.isNotBlank() } ?: publisher
+
+            when (this) {
+                is EBook -> {
+                    println("Enter format ebook")
+                    format = readlnOrNull()?.takeIf { it.isNotBlank() } ?: format
+                }
+
+                is Book -> {
+                    println("Enter page number")
+                    pageNumber = readlnOrNull()?.toIntOrNull() ?: pageNumber
+                }
             }
+            println("Update book successfully")
+        }
+
+    }
+//    override fun deleteBook() {
+//        println("Enter the book id to delete :")
+//        val id = readlnOrNull()?.toIntOrNull() ?: return
+//        val isBookBorrowed = LibraryData.listUser.any { user ->
+//            user.borrowedBooks.any { it.bookStatus == true }
+//        }
+//        if (isBookBorrowed) {
+//            println("Books that are being borrowed cannot be deleted.")
+//        } else {
+//            if (LibraryData.listBook.removeIf { it.id == id }) {
+//                println("Delete book successful")
+//            } else {
+//                println("Delete book fail")
+//            }
+//        }
+//    }
+
+    override fun deleteBook(bookId: Int): Boolean {
+        return findBookById(bookId)?.let {
+            LibraryData.listBook.remove(it)
+            println("Delete book successful")
+            true
+        } ?: run {
+            println("Delete book fail")
+            false
         }
     }
 
@@ -67,43 +129,6 @@ class BookManager : BookRepository {
         }
     }
 
-    override fun updateBook() {
-        println("Enter book id to update")
-        val id = readlnOrNull()?.toIntOrNull() ?: return
-        val book = LibraryData.listBook.find { it.id == id }
-        if (book == null) {
-            println("Book not found")
-        } else {
-            println("Enter book title: ")
-            val newTitle = readlnOrNull()?.takeIf { it.isNotBlank() } ?: book.bookTitle
-            println("Enter author: ")
-            val newAuthor = readlnOrNull().takeIf { it.isNullOrBlank() } ?: book.author
-            println("Enter publication year:")
-            val newPublicationYear = readlnOrNull()?.toIntOrNull() ?: book.publicationYear
-            println("Enter genre :")
-            val newGenre = readlnOrNull().takeIf { it.isNullOrBlank() } ?: book.genre
-            println("Enter publisher ")
-            val newPublisher = readlnOrNull().takeIf { it.isNullOrBlank() } ?: book.publisher
-
-            book.bookTitle = newTitle
-            book.author = newAuthor
-            book.publicationYear = newPublicationYear
-            book.genre = newGenre
-            book.publisher = newPublisher
-            if (book is EBook) {
-                println("Enter format ebook")
-                val newFormat = readlnOrNull().takeIf { it.isNullOrBlank() } ?: book.format
-                book.format = newFormat
-            } else if (book is Book) {
-                println("Enter page number")
-                val newPageNumber = readlnOrNull()?.toIntOrNull() ?: book.pageNumber
-                book.pageNumber = newPageNumber
-            }
-        }
-
-        println("Update book successfully")
-
-    }
 
     override fun searchBookByTitle() {
         println("Enter title book : ")
@@ -120,17 +145,24 @@ class BookManager : BookRepository {
         }
     }
 
-    fun displayAllBook(){
+    fun findBookById(bookID: Int): BookBase? {
+        return LibraryData.listBook.find { it.id == bookID } ?: run {
+            println("Book not found")
+            null
+        }
+    }
+
+    fun displayAllBook() {
         if (LibraryData.listEBooks.isEmpty()) {
-            println("📚 No eBooks available!")
+            println("No eBooks available!")
         } else {
             LibraryData.listEBooks.forEach { println(it.displayInfo()) }
         }
     }
 
-    fun displayAllEbook(){
+    fun displayAllEbook() {
         if (LibraryData.listBooks.isEmpty()) {
-            println("📚 No eBooks available!")
+            println("No eBooks available!")
         } else {
             LibraryData.listBooks.forEach { println(it.displayInfo()) }
         }
@@ -143,10 +175,5 @@ class BookManager : BookRepository {
                 "Book borrowed : ${LibraryData.listBook.count { it.bookStatus }}"
     )
 
-
-
-    private fun generateBookId(): Int {
-        return (LibraryData.listBook.maxOfOrNull { it.id } ?: 0) + 1
-    }
 
 }

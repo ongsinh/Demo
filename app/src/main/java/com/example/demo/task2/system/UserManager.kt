@@ -1,6 +1,7 @@
-package task2.system
+package com.example.demo.task2.system
 
 import com.example.demo.task2.model.User
+import com.example.demo.task2.data.LibraryData
 
 class UserManager {
     fun addUser() {
@@ -46,7 +47,7 @@ class UserManager {
         }
     }
 
-    fun searchUserById() {
+    fun searchUserById()  {
         println("Enter id user")
         val id = readlnOrNull()?.toIntOrNull() ?: return
         val search = LibraryData.listUser.filter { it.id == id }
@@ -58,6 +59,7 @@ class UserManager {
             }
         }
     }
+
 
     fun updateUser() {
         println("Enter user ID: ")
@@ -93,4 +95,6 @@ class UserManager {
             result
         }
     }
+
+
 }
