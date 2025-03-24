@@ -1,8 +1,9 @@
 package com.example.demo.task2.data
+
 import com.example.demo.task2.model.Book
 import com.example.demo.task2.model.BookBase
-import com.example.demo.task2.model.User
 import com.example.demo.task2.model.EBook
+import com.example.demo.task2.model.User
 
 object LibraryData {
 
@@ -24,17 +25,17 @@ object LibraryData {
     )
 
 
-    val listBook: MutableList<BookBase> = mutableListOf<BookBase>().apply {
+    val listAllBooks: MutableList<BookBase> = mutableListOf<BookBase>().apply {
         addAll(listBooks)
         addAll(listEBooks)
     }
 
 
     val listUser = mutableListOf(
-        User(1, "Nguyễn Văn A", "0123456789", mutableListOf(listBook[0], listBook[1])),
+        User(1, "Nguyễn Văn A", "0123456789", mutableListOf(listAllBooks[0], listAllBooks[1])),
         User(2, "Trần Thị B", "0123456789"),
         User(3, "Lê Văn C", "0123456789"),
-        User(4, "Phạm Thị D", "0123456789", mutableListOf(listBook[2])),
+        User(4, "Phạm Thị D", "0123456789", mutableListOf(listAllBooks[2])),
         User(5, "Hoàng Văn E", "0123456789"),
         User(6, "Vũ Thị F", "0123456789"),
         User(7, "Đặng Văn G", "0123456789"),

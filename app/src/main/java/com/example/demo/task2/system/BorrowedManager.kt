@@ -1,8 +1,8 @@
 package com.example.demo.task2.system
 
-import com.example.demo.task2.model.User
 import com.example.demo.task2.data.LibraryData
 import com.example.demo.task2.`interface`.Borrowable
+import com.example.demo.task2.model.User
 
 class BorrowedManager : Borrowable {
 
@@ -20,16 +20,16 @@ class BorrowedManager : Borrowable {
                 phoneNumber = readlnOrNull()
                 when {
                     phoneNumber.isNullOrBlank() -> println("Phone number can't be empty")
-                    !isValidphoneNumber(phoneNumber) -> println("10 digit phone number with no special characters")
-                    else -> return break
+                    !isValidPhoneNumber(phoneNumber) -> println("10 digit phone number with no special characters")
+                    else -> break
                 }
             } while (true)
             user = User(User.generateId(LibraryData.listUser), name, phoneNumber.toString())
-            LibraryData.listUser.add(user)
+            LibraryData.listUser.add(user!!)
             println("Add people successfully borrowed books")
         }
 
-        val availableBook = LibraryData.listBook.filter { it.bookStatus == false }
+        val availableBook = LibraryData.listAllBooks.filter { !it.bookStatus }
 
         if (availableBook.isEmpty()) {
             println(" There are no books available to borrow.!")
@@ -54,7 +54,8 @@ class BorrowedManager : Borrowable {
     override fun returnBook() {
         println("Enter user ID : ")
         val idUser = readlnOrNull()?.toIntOrNull() ?: return
-        val user = LibraryData.listUser.find { it.id == idUser } ?: return println("Invalid user id")
+        val user =
+            LibraryData.listUser.find { it.id == idUser } ?: return println("Invalid user id")
 
         println("Enter book ID to return :")
         val idBook = readlnOrNull()?.toIntOrNull() ?: return
@@ -70,9 +71,9 @@ class BorrowedManager : Borrowable {
         println("Enter user ID : ")
         val idUser = readlnOrNull()?.toIntOrNull() ?: return
         LibraryData.listUser.find { it.id == idUser }?.let { user ->
-            if (user.borrowedBooks.isEmpty()){
+            if (user.borrowedBooks.isEmpty()) {
                 println("List book borrowed empty")
-            }else{
+            } else {
                 user.borrowedBooks.forEach { println(it) }
             }
         }
@@ -89,7 +90,7 @@ class BorrowedManager : Borrowable {
         }
     }
 
-    fun isValidphoneNumber(phoneNumber: String): Boolean {
+    private fun isValidPhoneNumber(phoneNumber: String): Boolean {
         return phoneNumber.matches(Regex("^\\d{10}$"))
     }
 

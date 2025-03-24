@@ -1,9 +1,9 @@
 package com.example.demo.task2.system
 
 
-import com.example.demo.task2.model.Book
 import com.example.demo.task2.data.LibraryData
 import com.example.demo.task2.`interface`.BookRepository
+import com.example.demo.task2.model.Book
 import com.example.demo.task2.model.BookBase
 import com.example.demo.task2.model.EBook
 
@@ -32,7 +32,7 @@ class BookManager : BookRepository {
             println("Enter format:")
             val format = readlnOrNull()?.takeIf { it.isNotBlank() } ?: return
             EBook(
-                EBook.generateId(LibraryData.listBook),
+                EBook.generateId(LibraryData.listAllBooks),
                 bookTitle,
                 author,
                 publicationYear,
@@ -45,7 +45,7 @@ class BookManager : BookRepository {
             println("Enter page number:")
             val pageNumber = readlnOrNull()?.toIntOrNull() ?: return
             Book(
-                Book.generateId(LibraryData.listBook),
+                Book.generateId(LibraryData.listAllBooks),
                 bookTitle,
                 author,
                 publicationYear,
@@ -56,7 +56,7 @@ class BookManager : BookRepository {
             )
         }
 
-        LibraryData.listBook.add(book)
+        LibraryData.listAllBooks.add(book)
         println("Add book successful!")
     }
 
@@ -93,7 +93,7 @@ class BookManager : BookRepository {
     }
 //    override fun deleteBook() {
 //        println("Enter the book id to delete :")
-//        val id = readlnOrNull()?.toIntOrNull() ?: return
+//        val id = readonlyOrNull()?.toIntOrNull() ?: return
 //        val isBookBorrowed = LibraryData.listUser.any { user ->
 //            user.borrowedBooks.any { it.bookStatus == true }
 //        }
@@ -110,7 +110,7 @@ class BookManager : BookRepository {
 
     override fun deleteBook(bookId: Int): Boolean {
         return findBookById(bookId)?.let {
-            LibraryData.listBook.remove(it)
+            LibraryData.listAllBooks.remove(it)
             println("Delete book successful")
             true
         } ?: run {
@@ -120,10 +120,10 @@ class BookManager : BookRepository {
     }
 
     override fun displayBook() {
-        if (LibraryData.listBook.isEmpty()) {
+        if (LibraryData.listAllBooks.isEmpty()) {
             println("List book empty")
         } else {
-            LibraryData.listBook.forEach {
+            LibraryData.listAllBooks.forEach {
                 println(it)
             }
         }
@@ -133,7 +133,7 @@ class BookManager : BookRepository {
     override fun searchBookByTitle() {
         println("Enter title book : ")
         val nameBook = readlnOrNull()?.uppercase() ?: return
-        val search = LibraryData.listBook.filter { it.bookTitle.uppercase().contains(nameBook) }
+        val search = LibraryData.listAllBooks.filter { it.bookTitle.uppercase().contains(nameBook) }
 
         if (search.isEmpty()) {
             println("Book not found ")
@@ -145,8 +145,8 @@ class BookManager : BookRepository {
         }
     }
 
-    fun findBookById(bookID: Int): BookBase? {
-        return LibraryData.listBook.find { it.id == bookID } ?: run {
+    private fun findBookById(bookID: Int): BookBase? {
+        return LibraryData.listAllBooks.find { it.id == bookID } ?: run {
             println("Book not found")
             null
         }
@@ -169,11 +169,53 @@ class BookManager : BookRepository {
     }
 
     override fun countsBook() = println(
-        "Total book : ${LibraryData.listBook.size} \n" +
-                "Book : ${LibraryData.listBook.count { it is Book }} \n" +
-                "EBook : ${LibraryData.listBook.count { it is EBook }} \n" +
-                "Book borrowed : ${LibraryData.listBook.count { it.bookStatus }}"
+        "Total book : ${LibraryData.listAllBooks.size} \n" +
+                "Book : ${LibraryData.listAllBooks.count { it is Book }} \n" +
+                "EBook : ${LibraryData.listAllBooks.count { it is EBook }} \n" +
+                "Book borrowed : ${LibraryData.listAllBooks.count { it.bookStatus }}"
     )
 
+    override fun filterBookByYear(): List<BookBase> {
+        return filterBook { it.publicationYear > 2000 }
+    }
+
+    override fun filterBookByPageNumber(): List<BookBase> {
+        return filterBook { ((it as? Book)?.pageNumber ?: 0) > 200 }
+    }
+
+    override fun filterBookByFormat(format: String): List<BookBase> {
+        return filterBook { (it as? EBook)?.format?.contains(format, ignoreCase = true) == true }
+    }
+
+    override fun filterBookByFormatAndYear(format: String, year: Int): List<BookBase> {
+        return filterBook {
+            (it as? EBook)?.format?.contains(
+                format,
+                ignoreCase = true
+            ) == true && it.publicationYear > year
+        }
+    }
+
+    override fun sortByBookByYear(): List<BookBase> {
+        return compareBook { a, b -> a.publicationYear.compareTo(b.publicationYear) }
+    }
+
+//    fun sortByBookTitle(): List<BookBase> {
+//        return compareBook { a, b -> a.bookTitle.compareTo(b.bookTitle) }
+//    }
+
+
+    private fun filterBook(condition: (BookBase) -> Boolean): List<BookBase> {
+        return LibraryData.listAllBooks.filter(condition).also {
+            println(it)
+        }
+    }
+
+
+    private fun compareBook(compareFunction: (BookBase, BookBase) -> Int): List<BookBase> {
+        return LibraryData.listAllBooks.sortedWith(compareFunction).also {
+            println(it)
+        }
+    }
 
 }
