@@ -1,6 +1,5 @@
 package com.example.demo.task2.system
 
-
 fun main() {
     while (true) {
         println("Select program")
@@ -60,7 +59,12 @@ fun manageBook() {
         println("6. Update information book")
         println("7. Search book by title")
         println("8. Book count statistics")
-        println("9. Exit")
+        println("9. Filter book by year")
+        println("10. Filter book by page number")
+        println("11. Filter book by format")
+        println("12. Filter book by format and year")
+        println("13. Sort book by year")
+        println("14. Sort book by title")
         when (readlnOrNull()?.toIntOrNull()) {
             1 -> bookManager.addBook()
             2 -> {
@@ -74,7 +78,25 @@ fun manageBook() {
             6 -> bookManager.updateBook()
             7 -> bookManager.searchBookByTitle()
             8 -> bookManager.countsBook()
-            9 -> return
+            9 -> bookManager.filterBookByYear()
+            10 -> bookManager.filterBookByPageNumber()
+            11 -> {
+                println("Enter format book: ")
+                val format = readlnOrNull()?.takeIf { it.isNotBlank() } ?: return
+
+                bookManager.filterBookByFormat(format)
+            }
+            12 -> {
+                println("Enter format book: ")
+                val format = readlnOrNull()?.takeIf { it.isNotBlank() } ?: return
+
+                println("Enter publication year:")
+                val year = readlnOrNull()?.toIntOrNull() ?: return
+
+                bookManager.filterBookByFormatAndYear(format, year)
+            }
+            13 -> bookManager.sortByBookByYear()
+            14 -> bookManager.sortByBookTitle()
             else -> println("Please re-enter")
         }
     }

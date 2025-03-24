@@ -200,9 +200,9 @@ class BookManager : BookRepository {
         return compareBook { a, b -> a.publicationYear.compareTo(b.publicationYear) }
     }
 
-//    fun sortByBookTitle(): List<BookBase> {
-//        return compareBook { a, b -> a.bookTitle.compareTo(b.bookTitle) }
-//    }
+    fun sortByBookTitle(): List<BookBase> {
+        return compareBook { a, b -> a.bookTitle.compareTo(b.bookTitle) }
+    }
 
 
     private fun filterBook(condition: (BookBase) -> Boolean): List<BookBase> {
