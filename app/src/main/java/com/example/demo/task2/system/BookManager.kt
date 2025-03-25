@@ -61,7 +61,6 @@ class BookManager : BookRepository {
     //read and write in IO
     override suspend fun addBook() = withContext(Dispatchers.IO) {
         val book = inputBook()
-        println(Thread.currentThread())
         LibraryData.listAllBooks.add(book)
         println("Add book successful!")
     }
