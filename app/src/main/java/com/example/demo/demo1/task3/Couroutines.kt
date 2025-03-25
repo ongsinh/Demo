@@ -1,4 +1,4 @@
-package com.example.demo.task3
+package com.example.demo.demo1.task3
 
 
 import kotlinx.coroutines.Dispatchers
@@ -61,8 +61,8 @@ fun main(): Unit = runBlocking {
         println(one + two)
     }
     val result1 = measureTimeMillis {
-        val one = async{doSomething1()}
-        val two = async{doSomething2()}
+        val one = async{ doSomething1() }
+        val two = async{ doSomething2() }
         println(one.await() + two.await())
     }
     println(result)

@@ -1,4 +1,4 @@
-package com.example.demo.task3
+package com.example.demo.demo1.task3
 
 //Hàm nhận một hàm khác làm tham số
 fun operation(a: Int, b: Int, operation: (Int, Int) -> Int): Int {

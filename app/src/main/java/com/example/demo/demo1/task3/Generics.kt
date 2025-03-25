@@ -1,4 +1,4 @@
-﻿package com.example.demo.task3
+﻿package com.example.demo.demo1.task3
 
 //Covariance
 open class Food(
@@ -38,7 +38,7 @@ interface PaymentProcess<in T : Payment>{
     fun paymentProcess(payment: T)
 }
 
-class GeneralPaymentProcess : PaymentProcess<Payment>{
+class GeneralPaymentProcess : PaymentProcess<Payment> {
     override fun paymentProcess(payment: Payment) {
         println("Processing payment of ${payment.amount} USD" )
     }
