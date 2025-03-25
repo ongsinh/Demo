@@ -1,6 +1,8 @@
 package com.example.demo.task2.system
 
-fun main() {
+
+suspend fun main() {
+    println(Thread.currentThread())
     while (true) {
         println("Select program")
         println("1. User management ")
@@ -27,7 +29,7 @@ fun main() {
 
 }
 
-fun manageBorrowedBook() {
+suspend fun manageBorrowedBook() {
     val borrowedManager = BorrowedManager()
     while (true) {
         println("Select program")
@@ -47,8 +49,14 @@ fun manageBorrowedBook() {
     }
 }
 
-fun manageBook() {
+suspend fun manageBook() {
     val bookManager = BookManager()
+
+//    CoroutineScope(Dispatchers.IO).launch {
+//        println(Thread.currentThread())
+//        LibraryData.listEBooks.forEach { println(it.displayInfo()) }
+//    }
+
     while (true) {
         println("Select program")
         println("1. Add new book ")
@@ -65,9 +73,10 @@ fun manageBook() {
         println("12. Filter book by format and year")
         println("13. Sort book by year")
         println("14. Sort book by title")
+        println("15. Exit")
         when (readlnOrNull()?.toIntOrNull()) {
             1 -> bookManager.addBook()
-            2 -> {
+            2 ->{
                 println("Enter the book id to delete :")
                 val id = readlnOrNull()?.toIntOrNull() ?: return
                 bookManager.deleteBook(id)
@@ -97,6 +106,7 @@ fun manageBook() {
             }
             13 -> bookManager.sortByBookByYear()
             14 -> bookManager.sortByBookTitle()
+            15 -> break
             else -> println("Please re-enter")
         }
     }

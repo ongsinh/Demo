@@ -2,6 +2,7 @@ package com.example.demo.task2.system
 
 import com.example.demo.task2.model.User
 import com.example.demo.task2.data.LibraryData
+import com.example.demo.task2.data.LibraryHelper
 
 class UserManager {
     fun addUser() {
@@ -22,7 +23,7 @@ class UserManager {
         println("Add people successfully borrowed books")
     }
 
-    fun isValidPhoneNumber(phoneNumber: String): Boolean {
+    private fun isValidPhoneNumber(phoneNumber: String): Boolean {
         return phoneNumber.matches(Regex("^\\d{10}$"))
     }
 
@@ -41,13 +42,11 @@ class UserManager {
         if (LibraryData.listUser.isEmpty()) {
             println("List is empty")
         } else {
-            LibraryData.listUser.forEach {
-                println("Id : ${it.id} , Name : ${it.name}, PhoneNumber : ${it.phoneNumber}")
-            }
+            LibraryHelper.displayList(LibraryData.listUser)
         }
     }
 
-    fun searchUserById()  {
+    fun searchUserById() {
         println("Enter id user")
         val id = readlnOrNull()?.toIntOrNull() ?: return
         val search = LibraryData.listUser.filter { it.id == id }
@@ -71,17 +70,20 @@ class UserManager {
             println("User not found!")
             return
         }
+        user.apply {
+            println("Enter new name : ")
+            val newName = readlnOrNull()?.takeIf { it.isNotBlank() } ?: user.name
 
-        println("Enter new name : ")
-        val newName = readlnOrNull()?.takeIf { it.isNotBlank() } ?: user.name
+            println("Enter new email : ")
+            val newPhoneNumber =
+                readlnOrNull()?.takeIf { it.isNotBlank() && isValidPhoneNumber(it) }
+                    ?: user.phoneNumber
 
-        println("Enter new email : ")
-        val newPhoneNumber = readlnOrNull()?.takeIf { it.isNotBlank() && isValidPhoneNumber(it) } ?: user.phoneNumber
+            user.name = newName
+            user.phoneNumber = newPhoneNumber
 
-        user.name = newName
-        user.phoneNumber = newPhoneNumber
-
-        println("User updated successfully!")
+            println("User updated successfully!")
+        }
     }
 
     fun findUserByName(): List<User>? {

@@ -1,12 +1,11 @@
 package com.example.demo.task2.model
 
-
 data class EBook(
     override val id: Int,
     override var bookTitle: String,
     override var author: String,
     override var publicationYear: Int,
-    override var genre: String,
+    override var genre: Genre,
     override var publisher: String,
     override var bookStatus: Boolean,
     var format: String,

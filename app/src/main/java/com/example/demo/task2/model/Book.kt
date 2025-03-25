@@ -5,7 +5,7 @@ data class Book(
     override var bookTitle: String,
     override var author: String,
     override var publicationYear: Int,
-    override var genre: String,
+    override var genre: Genre,
     override var publisher: String,
     override var bookStatus: Boolean,
     var pageNumber: Int

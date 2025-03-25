@@ -4,11 +4,11 @@ import com.example.demo.task2.model.BookBase
 
 
 interface BookRepository {
-    fun addBook()
-    fun deleteBook(bookId: Int): Boolean
+    suspend fun addBook()
+    suspend fun deleteBook(bookId: Int): Boolean
     fun displayBook()
-    fun updateBook()
-    fun searchBookByTitle()
+    suspend fun updateBook()
+    suspend fun searchBookByTitle()
     fun countsBook()
     fun filterBookByYear(): List<BookBase>?
     fun filterBookByPageNumber(): List<BookBase>?

@@ -1,93 +1,107 @@
 package com.example.demo.task2.system
 
-
 import com.example.demo.task2.data.LibraryData
+import com.example.demo.task2.data.LibraryHelper
 import com.example.demo.task2.`interface`.BookRepository
 import com.example.demo.task2.model.Book
 import com.example.demo.task2.model.BookBase
 import com.example.demo.task2.model.EBook
+import com.example.demo.task2.model.Genre
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class BookManager : BookRepository {
-    override fun addBook() {
-        println("Enter book title: ")
-        val bookTitle = readlnOrNull()?.takeIf { it.isNotBlank() } ?: return
+    private val libraryHelper = LibraryHelper
 
-        println("Enter author: ")
-        val author = readlnOrNull()?.takeIf { it.isNotBlank() } ?: return
+    private suspend fun inputBook(): BookBase {
+        return withContext(Dispatchers.IO) {
+            println(Thread.currentThread())
+            val bookTitle = libraryHelper.getBookTitle()
 
-        println("Enter publication year:")
-        val publicationYear = readlnOrNull()?.toIntOrNull() ?: return
+            val author = libraryHelper.getAuthor()
 
-        println("Enter genre :")
-        val genre = readlnOrNull()?.takeIf { it.isNotBlank() } ?: return
+            val publicationYear = libraryHelper.getPublicationYear()
 
-        println("Enter publisher ")
-        val publisher = readlnOrNull()?.takeIf { it.isNotBlank() } ?: return
+            val genre = selectGenre()
 
-        println("Is this Ebook? (yes/no)")
-        val isEbook = readlnOrNull()?.lowercase() == "yes"
+            val publisher = libraryHelper.getPublisher()
 
+            println("Is this Ebook? (yes/no)")
+            val isEbook = readlnOrNull()?.lowercase() == "yes"
 
-        val book = if (isEbook) {
-            println("Enter format:")
-            val format = readlnOrNull()?.takeIf { it.isNotBlank() } ?: return
-            EBook(
-                EBook.generateId(LibraryData.listAllBooks),
-                bookTitle,
-                author,
-                publicationYear,
-                genre,
-                publisher,
-                false,
-                format
-            )
-        } else {
-            println("Enter page number:")
-            val pageNumber = readlnOrNull()?.toIntOrNull() ?: return
-            Book(
-                Book.generateId(LibraryData.listAllBooks),
-                bookTitle,
-                author,
-                publicationYear,
-                genre,
-                publisher,
-                false,
-                pageNumber
-            )
+            return@withContext if (isEbook) {
+                val format = libraryHelper.getFormat()
+                EBook(
+                    EBook.generateId(LibraryData.listAllBooks),
+                    bookTitle,
+                    author,
+                    publicationYear,
+                    genre,
+                    publisher,
+                    false,
+                    format
+                )
+            } else {
+                val pageNumber = libraryHelper.getPageNumber()
+                Book(
+                    Book.generateId(LibraryData.listAllBooks),
+                    bookTitle,
+                    author,
+                    publicationYear,
+                    genre,
+                    publisher,
+                    false,
+                    pageNumber
+                )
+            }
         }
+    }
 
+
+    //read and write in IO
+    override suspend fun addBook() = withContext(Dispatchers.IO) {
+        val book = inputBook()
+        println(Thread.currentThread())
         LibraryData.listAllBooks.add(book)
         println("Add book successful!")
     }
 
-    override fun updateBook() {
-        println("Enter book id to update")
-        val id = readlnOrNull()?.toIntOrNull() ?: return
-        val book = findBookById(id)
-        book?.apply {
-            println("Enter book title: ")
-            bookTitle = readlnOrNull()?.takeIf { it.isNotBlank() } ?: bookTitle
-            println("Enter author: ")
-            author = readlnOrNull()?.takeIf { it.isNotBlank() } ?: author
-            println("Enter publication year:")
-            publicationYear = readlnOrNull()?.toIntOrNull() ?: publicationYear
-            println("Enter genre :")
-            genre = readlnOrNull()?.takeIf { it.isNotBlank() } ?: genre
-            println("Enter publisher ")
-            publisher = readlnOrNull()?.takeIf { it.isNotBlank() } ?: publisher
+    private fun selectGenre(): Genre {
+        println("Select a genre :")
+        Genre.displayGenre()
+        while (true) {
+            print("Enter number to a genre : ")
+            val choice = readlnOrNull()?.toIntOrNull()
+            val genre = Genre.getGenre(choice ?: -1)
+            if (genre != null) return genre
+            println("Please re-enter")
 
-            when (this) {
-                is EBook -> {
-                    println("Enter format ebook")
-                    format = readlnOrNull()?.takeIf { it.isNotBlank() } ?: format
-                }
+        }
+    }
 
-                is Book -> {
-                    println("Enter page number")
-                    pageNumber = readlnOrNull()?.toIntOrNull() ?: pageNumber
+    override suspend fun updateBook() {
+        withContext(Dispatchers.IO) {
+            val id = libraryHelper.getBookId()
+            val book = findBookById(id)
+            book?.apply {
+                bookTitle = LibraryHelper.getBookTitle()
+                author = LibraryHelper.getAuthor()
+                publicationYear = LibraryHelper.getPublicationYear()
+                println("Enter genre :")
+                genre = selectGenre()
+                publisher = LibraryHelper.getPublisher()
+
+                when (this) {
+                    is EBook -> {
+                        format = LibraryHelper.getFormat()
+                    }
+
+                    is Book -> {
+                        pageNumber = LibraryHelper.getPageNumber()
+                    }
                 }
+                println("Update book successfully")
             }
-            println("Update book successfully")
         }
 
     }
@@ -108,14 +122,16 @@ class BookManager : BookRepository {
 //        }
 //    }
 
-    override fun deleteBook(bookId: Int): Boolean {
-        return findBookById(bookId)?.let {
-            LibraryData.listAllBooks.remove(it)
-            println("Delete book successful")
-            true
-        } ?: run {
-            println("Delete book fail")
-            false
+    override suspend fun deleteBook(bookId: Int): Boolean {
+        return withContext(Dispatchers.IO) {
+            findBookById(bookId)?.let {
+                LibraryData.listAllBooks.remove(it)
+                println("Delete book successful")
+                true
+            } ?: run {
+                println("Delete book fail")
+                false
+            }
         }
     }
 
@@ -123,16 +139,13 @@ class BookManager : BookRepository {
         if (LibraryData.listAllBooks.isEmpty()) {
             println("List book empty")
         } else {
-            LibraryData.listAllBooks.forEach {
-                println(it)
-            }
+            LibraryHelper.displayList(LibraryData.listAllBooks)
         }
     }
 
 
-    override fun searchBookByTitle() {
-        println("Enter title book : ")
-        val nameBook = readlnOrNull()?.uppercase() ?: return
+    override suspend fun searchBookByTitle() {
+        val nameBook = LibraryHelper.getBookTitle().uppercase()
         val search = LibraryData.listAllBooks.filter { it.bookTitle.uppercase().contains(nameBook) }
 
         if (search.isEmpty()) {
@@ -156,7 +169,7 @@ class BookManager : BookRepository {
         if (LibraryData.listEBooks.isEmpty()) {
             println("No eBooks available!")
         } else {
-            LibraryData.listEBooks.forEach { println(it.displayInfo()) }
+            LibraryHelper.displayList(LibraryData.listBooks)
         }
     }
 
@@ -164,7 +177,7 @@ class BookManager : BookRepository {
         if (LibraryData.listBooks.isEmpty()) {
             println("No eBooks available!")
         } else {
-            LibraryData.listBooks.forEach { println(it.displayInfo()) }
+            LibraryHelper.displayList(LibraryData.listEBooks)
         }
     }
 
@@ -174,6 +187,19 @@ class BookManager : BookRepository {
                 "EBook : ${LibraryData.listAllBooks.count { it is EBook }} \n" +
                 "Book borrowed : ${LibraryData.listAllBooks.count { it.bookStatus }}"
     )
+
+    private fun filterBook(condition: (BookBase) -> Boolean): List<BookBase> {
+        return LibraryData.listAllBooks.filter(condition).also {
+            println(it)
+        }
+    }
+
+
+    private fun compareBook(compareFunction: (BookBase, BookBase) -> Int): List<BookBase> {
+        return LibraryData.listAllBooks.sortedWith(compareFunction).also {
+            println(it)
+        }
+    }
 
     override fun filterBookByYear(): List<BookBase> {
         return filterBook { it.publicationYear > 2000 }
@@ -204,18 +230,5 @@ class BookManager : BookRepository {
         return compareBook { a, b -> a.bookTitle.compareTo(b.bookTitle) }
     }
 
-
-    private fun filterBook(condition: (BookBase) -> Boolean): List<BookBase> {
-        return LibraryData.listAllBooks.filter(condition).also {
-            println(it)
-        }
-    }
-
-
-    private fun compareBook(compareFunction: (BookBase, BookBase) -> Int): List<BookBase> {
-        return LibraryData.listAllBooks.sortedWith(compareFunction).also {
-            println(it)
-        }
-    }
 
 }

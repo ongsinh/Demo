@@ -1,8 +1,8 @@
 package com.example.demo.task2.`interface`
 
 interface Borrowable {
-    fun borrowBook()
-    fun displayBookBorrowed()
+    suspend fun borrowBook()
+    suspend fun displayBookBorrowed()
     fun returnBook()
     fun getBookBorrowedUser()
 }
